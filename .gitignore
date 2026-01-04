@@ -1,0 +1,67 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# =========================
+# Jupyter / IPython
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Logs / Cache
+# =========================
+*.log
+.cache/
+logs/
+
+
+# =========================
+# Modelos e pesos (download automático)
+# =========================
+*.pt
+*.pth
+*.onnx
+*.safetensors
+models/
+weights/
+
+# =========================
+# HuggingFace / Torch cache
+# =========================
+.huggingface/
+torch_cache/
+.cache/torch/
+.cache/huggingface/
+
+# =========================
+# Ultralytics / YOLO
+# =========================
+ultralytics/
+yolov8*.pt
+
+# =========================
+# Sistema Operacional
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# IDEs / Editores   
+# =========================
+.vscode/
+.idea/
+*.iml

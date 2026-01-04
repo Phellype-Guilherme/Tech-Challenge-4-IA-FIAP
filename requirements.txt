@@ -1,0 +1,15 @@
+opencv-python==4.10.0.84
+numpy==1.24.3
+tqdm>=4.66
+mediapipe==0.10.11
+protobuf==3.20.3
+
+tensorflow-cpu==2.12.1
+keras==2.12.0
+gast==0.4.0
+tensorboard==2.12.3
+deepface==0.0.93
+
+ultralytics>=8.2.0
+open-clip-torch>=2.26.0
+pillow>=10.0.0

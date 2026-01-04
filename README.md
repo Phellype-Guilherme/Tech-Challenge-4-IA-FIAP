@@ -1,136 +1,201 @@
-# 🧠 Tech Challenge - Fine-tuning de Modelos de Linguagem com AmazonTitles-1.3MM
 
-Este projeto foi desenvolvido como parte do **Tech Challenge da FIAP (Fase 3 – Inteligência Artificial)** e tem como objetivo aplicar técnicas de **fine-tuning em modelos fundacionais** (como LLaMA, TinyLLaMA, Mistral, etc.) utilizando o dataset **AmazonTitles-1.3MM**.
+# 🧠 Tech Challenge – Análise Inteligente de Vídeo com IA (Visão Computacional)
 
-O propósito é treinar um modelo capaz de **gerar descrições de produtos a partir de seus títulos**, simulando perguntas reais de usuários sobre itens disponíveis no catálogo da Amazon.
+Este projeto foi desenvolvido como parte do **Tech Challenge da FIAP (Fase 4 – Inteligência Artificial)** e tem como objetivo a criação de uma **aplicação de análise automática de vídeo**, utilizando técnicas avançadas de **Visão Computacional, Deep Learning e IA Generativa**.
+
+A aplicação é capaz de:
+- Identificar pessoas em vídeo
+- Analisar expressões emocionais faciais
+- Detectar e categorizar atividades humanas
+- Detectar comportamentos anômalos
+- Gerar automaticamente um resumo estruturado do conteúdo analisado
+
+---
+
+## 🎯 Objetivo do Projeto
+
+Aplicar na prática os conhecimentos adquiridos ao longo da fase, integrando múltiplos modelos de IA para realizar uma **análise semântica e comportamental de vídeos**, simulando cenários reais como reuniões de trabalho, uso de computadores, interações sociais, atividades expressivas (dança, gestos) e situações fora do padrão.
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
-Tech-Challenge-3-IA-FIAP/
-├── data/
-│   ├── trn.json                 # Dataset original (fonte AmazonTitles-1.3MM) baixa e adicionar nesta pasta
-│   └── amazon_sft.jsonl         # Dataset preparado para fine-tuning
-├── out/
-│   └── tinyllama-lora/          # Diretório do adapter salvo após o fine-tuning
-├── prep_data.py                 # Script de pré-processamento e preparação do dataset
-├── eval_baseline.py             # Avaliação do modelo base antes do treinamento
-├── train_sft.py                 # Execução do fine-tuning (LoRA/QLoRA)
-├── inference.py                 # Geração de respostas com o modelo treinado
-├── requirements.txt             # Dependências do projeto
-└── README.md                    # Documentação do projeto
+Tech-Challenge-4-IA-FIAP/
+├── assets/
+│   └── input_video.mp4
+├── outputs/
+│   ├── annotated_video.mp4
+│   ├── report.txt
+│   └── events.json
+├── src/
+│   ├── main.py
+│   ├── pipeline/
+│   │   ├── person_detector.py
+│   │   ├── clip_zeroshot.py
+│   │   ├── action_recog.py
+│   │   ├── emotion_deepface.py
+│   │   ├── anomaly.py
+│   │   └── summarizer.py
+│   └── utils/
+│       └── video_utils.py
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 📊 Sobre o Dataset
+## ⚙️ Como Executar
 
-O **AmazonTitles-1.3MM** contém consultas e títulos de produtos da Amazon associados às suas descrições, coletados a partir de interações reais de usuários.
+### 0) Pré-requisitos
+- **Python 3.11** (recomendado)  
+- Windows PowerShell (ou terminal VS Code)  
+- Vídeo em `assets/input_video.mp4`
 
-Cada entrada do arquivo `trn.json` possui o formato:
-```json
-{
-  "uid": "0000031909",
-  "title": "Girls Ballet Tutu Neon Pink",
-  "content": "High quality 3 layer ballet tutu. 12 inches in length",
-  "target_ind": [...],
-  "target_rel": [...]
-}
+### 1) Criar ambiente virtual
+```powershell
+py -3.11 -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -U pip
 ```
 
-Para o fine-tuning, são utilizadas apenas as colunas:
-- **title** → título do produto  
-- **content** → descrição (texto alvo)
-
-Essas informações são transformadas em prompts de entrada para treinar o modelo a responder perguntas como:
-> "Quais são as principais características e benefícios deste produto?"
+### 2) Instalar dependências do projeto
+```powershell
+pip install -r requirements.txt
+```
 
 ---
 
-## ⚙️ Como Executar o Projeto
+## 🚀 Rodar em GPU NVIDIA CUDA (Recomendado)
 
-### 1️⃣ Preparar os Dados
-```powershell
-python .\prep_data.py `
-  --input "C:\Users\vkrlo\OneDrive\Área de Trabalho\Tech-Challenge-3-IA-FIAP\data\trn.json" `
-  --output .\data\amazon_sft.jsonl `
-  --variants-per-title 2 `
-  --max-samples 200000 `
-  --min-len 10 `
-  --max-content-len 1200
+GPU antiga:
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 ```
 
-### 2️⃣ Avaliar o Modelo Base (pré-treino)
-```powershell
-python .\eval_baseline.py `
-  --model-id TinyLlama/TinyLlama-1.1B-Chat-v1.0 `
-  --title "Fone de Ouvido Bluetooth JBL Tune 510BT" `
-  --question "Quais são as principais características e benefícios?"
+GPU nova por exemplo RTX 5070 arquitetura Blackwell e tem CUDA capability sm_120
+```bash
+pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu128
 ```
 
-### 3️⃣ Executar o Fine-Tuning
-```powershell
-python .\train_sft.py `
-  --model-id TinyLlama/TinyLlama-1.1B-Chat-v1.0 `
-  --dataset-path .\data\amazon_sft.jsonl `
-  --out .\out\tinyllama-lora `
-  --epochs 1 --seq-len 1024 --batch 2 --grad-accum 8
+### 🔎 Verificação - validar GPU (PyTorch)
+```bash
+python -c "import torch; print(torch.__version__); print('cuda:', torch.cuda.is_available()); print('cap:', torch.cuda.get_device_capability(0)); print(torch.cuda.get_device_name(0))"
 ```
 
-### 4️⃣ Fazer Inferência
 ```powershell
-python .\inference.py `
-  --model-id TinyLlama/TinyLlama-1.1B-Chat-v1.0 `
-  --adapter .\out\tinyllama-lora `
-  --title "Fone de Ouvido Bluetooth JBL Tune 510BT" `
-  --question "Quais são as principais características e benefícios?" `
-  --max-new-tokens 420 `
-  --device-map cpu `
-  --force-pt
+python -m src.main `
+  --video "assets/input_video.mp4" `
+  --out "outputs" `
+  --device cuda `
+  --frame-skip 2 `
+  --clip-len 16
 ```
+
+
+> 💡 **Observação importante (RTX 5070 / sm_120):**  
+> Algumas GPUs muito novas podem exigir uma versão do PyTorch com suporte atualizado. Se aparecer erro de compatibilidade, instale uma build mais recente (nightly) conforme instrução acima, ou use CPU temporariamente.
+
+---
+
+## 🖥️ Rodar em CPU (Fallback – mais lento)
+
+Se você não tiver GPU NVIDIA (ou não estiver configurada), rode em CPU:
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+```powershell
+python -m src.main `
+  --video "assets/input_video.mp4" `
+  --out "outputs" `
+  --device cpu `
+  --frame-skip 2 `
+  --clip-len 16
+```
+
+⚠️ **Aviso:** em CPU o processamento demora mais (pode levar de **20 a 40+ minutos**, dependendo do vídeo e das configurações).
+
+---
+
+## 🔧 Parâmetros úteis (para qualidade x performance)
+
+- `--frame-skip 2`  
+  Analisa 1 frame a cada 2 (menos custo, mais rápido).  
+  Para mais qualidade, use `--frame-skip 1`.
+
+- `--clip-len 16`  
+  Número de frames por “clip” para ações.  
+  Aumentar ajuda ações contínuas, mas custa mais.
+
+---
+
+## 📊 Saídas Geradas
+
+Após rodar, você terá:
+
+- `outputs/annotated_video.mp4`  
+  Vídeo com caixas (pessoa/face), IDs, atividade e emoção.
+
+- `outputs/report.txt`  
+  Relatório automático com:
+  - total de frames analisados
+  - número de anomalias detectadas
+  - ranking de atividades
+  - emoções por pessoa
+  - atividades por pessoa
+  - amostras de anomalias
+
+- `outputs/events.json`  
+  Log detalhado por frame (útil para auditoria/debug).
 
 ---
 
 ## 🧠 Técnicas Utilizadas
 
-- **Fine-Tuning Supervisionado (SFT)** com LoRA / QLoRA  
-- **Modelos base compatíveis com Hugging Face Transformers**
-- **Tokenização e truncamento dinâmico**
-- **Avaliação baseline antes do treino**
-- **Inferência com tradução automática para PT-BR**
-- **Offload automático para CPU (compatível com Windows)**
+### 1) Detecção & Tracking de Pessoas
+- **YOLOv8 (Ultralytics)** para detectar pessoas
+- **ByteTrack** para manter um ID consistente ao longo do vídeo
+
+### 2) Emoções Faciais (por pessoa)
+- **DeepFace** para inferir emoções (happy, sad, angry, fear, surprise, neutral, etc.)
+- Associação emoção ↔ pessoa via proximidade box pessoa / face
+
+### 3) Atividades (por pessoa e no geral)
+Abordagem híbrida (mais robusta que “um modelo só”):
+- **CLIP Zero-Shot (OpenCLIP)** com prompts em inglês (mais “humanos”) e **labels final em português**
+- **Action Recognition (R3D-18 / Kinetics400)** como *fallback* quando o CLIP não está confiante
+- Heurísticas simples para atividades “contextuais”, ex:
+  - **reunião / conversa** (pessoas próximas, postura, baixa movimentação)
+  - **usando computador / digitando** (pessoa sentada + mãos perto da região de teclado/mesa + objetos próximos)
+
+### 4) Anomalias
+- Anomalia = movimento fora do padrão geral do vídeo (gestos bruscos, mudanças abruptas etc.)
+- Implementação: **z-score** do deslocamento/variação de posição ao longo do tempo
+
+### 5) Suavização temporal (anti “alucinação”)
+- Votação/janela temporal para reduzir troca de labels frame a frame
+- “cooldown” mínimo antes de mudar a atividade dominante
 
 ---
 
-## ⚡ Dicas de Execução
-
-- No Windows, se o `bitsandbytes` não estiver disponível, use:
-  ```bash
-  --optim adamw_torch
-  ```
-- Ajuste `--seq-len`, `--batch` e `--grad-accum` conforme o limite de memória.
-- Para rodar sem GPU, adicione `--device-map cpu` e `--offload-dir offload_infer`.
-
----
-
-## 📦 Saídas Geradas
-
-- **`out/tinyllama-lora/`** → Adapter do modelo fine-tunado.  
-- **`data/amazon_sft.jsonl`** → Dataset formatado para treinamento.  
-- **Respostas inferidas** → Saída textual em português (via `--force-pt`).
-
----
 
 ## 📚 Bibliotecas Principais
 
-- `transformers` – Modelos fundacionais e tokenização  
-- `datasets` – Manipulação e split de dados  
-- `trl` – Fine-tuning supervisionado (SFTTrainer)  
-- `peft` – Adaptação leve com LoRA / QLoRA  
-- `accelerate` – Treinamento otimizado (CPU/GPU/offload)  
-- `torch` – Backend de deep learning  
+- torch - Backend de deep learning utilizado para executar modelos de IA em CPU ou GPU (CUDA), incluindo Action Recognition e CLIP
+- ultralytics - Implementação do YOLOv8 para detecção e tracking de pessoas em vídeos
+- open-clip-torch - Implementação do CLIP Zero-Shot, utilizada para classificação semântica de atividades em linguagem natural
+- deepface - Biblioteca para análise de expressões emocionais faciais, baseada em modelos pré-treinados
+- opencv-python - – Processamento de vídeo, leitura de frames, escrita de vídeo anotado e operações de imagem
+- numpy - – Operações numéricas, manipulação de arrays e cálculos estatísticos (ex: detecção de anomalias)
+- tqdm – Exibição de barras de progresso durante o processamento do vídeo
+- mediapipe - Extração de landmarks corporais e faciais, auxiliando na análise de postura e movimentos
+- protobuf - Serialização de dados utilizada internamente pelo MediaPipe e TensorFlow
+- keras - API de alto nível para construção e execução de modelos neurais utilizados pelo DeepFace
+- gast - Dependência do ecossistema TensorFlow para análise e transformação de grafos computacionais
+- tensorboard - Ferramenta de visualização e monitoramento utilizada pelo TensorFlow
+- pillow - Manipulação e conversão de imagens, suporte auxiliar ao OpenCV e CLIP
 
 ---
 
@@ -138,5 +203,5 @@ python .\inference.py `
 
 **Phellype Guilherme Pereira da Silva**  
 **RM:** 361625  
-**Projeto:** Fase 3 - Pós Tech FIAP - Inteligência Artificial  
-**Instituição:** [FIAP - Faculdade de Informática e Administração Paulista](https://www.fiap.com.br)
+**Projeto:** Fase 4 - Pós Tech FIAP - Inteligência Artificial  
+**Instituição:** [FIAP – Faculdade de Informática e Administração Paulista](https://www.fiap.com.br/)
