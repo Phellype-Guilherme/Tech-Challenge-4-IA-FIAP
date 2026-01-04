@@ -183,19 +183,19 @@ Abordagem híbrida (mais robusta que “um modelo só”):
 
 ## 📚 Bibliotecas Principais
 
-- torch - Backend de deep learning utilizado para executar modelos de IA em CPU ou GPU (CUDA), incluindo Action Recognition e CLIP
-- ultralytics - Implementação do YOLOv8 para detecção e tracking de pessoas em vídeos
-- open-clip-torch - Implementação do CLIP Zero-Shot, utilizada para classificação semântica de atividades em linguagem natural
-- deepface - Biblioteca para análise de expressões emocionais faciais, baseada em modelos pré-treinados
-- opencv-python - – Processamento de vídeo, leitura de frames, escrita de vídeo anotado e operações de imagem
-- numpy - – Operações numéricas, manipulação de arrays e cálculos estatísticos (ex: detecção de anomalias)
-- tqdm – Exibição de barras de progresso durante o processamento do vídeo
-- mediapipe - Extração de landmarks corporais e faciais, auxiliando na análise de postura e movimentos
-- protobuf - Serialização de dados utilizada internamente pelo MediaPipe e TensorFlow
-- keras - API de alto nível para construção e execução de modelos neurais utilizados pelo DeepFace
-- gast - Dependência do ecossistema TensorFlow para análise e transformação de grafos computacionais
-- tensorboard - Ferramenta de visualização e monitoramento utilizada pelo TensorFlow
-- pillow - Manipulação e conversão de imagens, suporte auxiliar ao OpenCV e CLIP
+- `torch` - Backend de deep learning utilizado para executar modelos de IA em CPU ou GPU (CUDA), incluindo Action Recognition e CLIP
+- `ultralytics` - Implementação do YOLOv8 para detecção e tracking de pessoas em vídeos
+- `open-clip-torch` - Implementação do CLIP Zero-Shot, utilizada para classificação semântica de atividades em linguagem natural
+- `deepface` - Biblioteca para análise de expressões emocionais faciais, baseada em modelos pré-treinados
+- `opencv-python` - – Processamento de vídeo, leitura de frames, escrita de vídeo anotado e operações de imagem
+- `numpy` - – Operações numéricas, manipulação de arrays e cálculos estatísticos (ex: detecção de anomalias)
+- `tqdm` – Exibição de barras de progresso durante o processamento do vídeo
+- `mediapipe` - Extração de landmarks corporais e faciais, auxiliando na análise de postura e movimentos
+- `protobuf` - Serialização de dados utilizada internamente pelo MediaPipe e TensorFlow
+- `keras` - API de alto nível para construção e execução de modelos neurais utilizados pelo DeepFace
+- `gast` - Dependência do ecossistema TensorFlow para análise e transformação de grafos computacionais
+- `tensorboard` - Ferramenta de visualização e monitoramento utilizada pelo TensorFlow
+- `pillow` - Manipulação e conversão de imagens, suporte auxiliar ao OpenCV e CLIP
 
 ---
 
