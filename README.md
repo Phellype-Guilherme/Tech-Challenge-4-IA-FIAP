@@ -31,10 +31,10 @@ Tech-Challenge-4-IA-FIAP/
 ├── src/
 │   ├── main.py
 │   ├── pipeline/
-│   │   ├── person_detector.py
+│   │   ├── init.py
 │   │   ├── clip_zeroshot.py
-│   │   ├── action_recog.py
-│   │   ├── emotion_deepface.py
+│   │   ├── clip_buffer.py
+│   │   ├── emotion.py
 │   │   ├── anomaly.py
 │   │   └── summarizer.py
 │   └── utils/
